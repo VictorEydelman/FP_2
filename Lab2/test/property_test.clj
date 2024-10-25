@@ -9,6 +9,7 @@
 (def gen_element
   gen/int)
 
+#_ {:clj-kondo/ignore [:unresolved-symbol]}
 (defspec invariant
          100
          (prop/for-all [element gen_element bag #a.Node{:value 1, :count 1, :left nil, :right nil}]
