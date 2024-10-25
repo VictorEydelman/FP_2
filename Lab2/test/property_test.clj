@@ -5,7 +5,6 @@
     [clojure.test.check.properties :as prop]
     [a :refer [add delete]]))
 
-
 (def gen_element
   gen/int)
 
