@@ -71,9 +71,9 @@
   (if (nil? node)
     init
     (let [init2 (reduce_left (:left node) f init)]
-      (let [init3 (loop [count (dec (:count node)) init3 (f init2 (:value node))]
-                    (if (zero? count) init3 (recur (dec count) (f init3 (:value node)))))]
-        (reduce_left (:right node) f init3))))
+      ((reduce_left (:right node) f (loop [count (dec (:count node)) init3 (f init2 (:value node))]
+                                                (if (zero? count) init3 (recur (dec count) (f init3 (:value node))))))
+        )))
   )
 (defn reduce_right [node f init]
   (if (nil? node)
