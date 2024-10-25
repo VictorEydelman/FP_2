@@ -1,6 +1,6 @@
 (ns unit_test
   (:require [clojure.test :refer [deftest testing is run-tests]]
-            [a :refer [create-bag add remove filter_min_or_equal filter_max_or_equal map reduce_left reduce_right]]))
+            [a :refer [create-bag add delete filter_min_or_equal filter_max_or_equal map_f reduce_left reduce_right]]))
 (deftest test_add
   (let [bag (create-bag)]
     (is (= (add bag 2) #a.Node{:value 2, :count 1, :left nil, :right nil}))
@@ -8,16 +8,16 @@
     (is (= (add (add (add (add bag 1) 1) 2) 0) #a.Node{:value 1, :count 2,
                                                        :left  #a.Node{:value 0, :count 1, :left nil, :right nil},
                                                        :right #a.Node{:value 2, :count 1, :left nil, :right nil}}))))
-(deftest test_remove
+(deftest test_delete
   (let [bag (add (add (add (add (create-bag) 1) 1) 2) 0)]
-    (is (= (remove bag 1) #a.Node{:value 1, :count 1,
+    (is (= (delete bag 1) #a.Node{:value 1, :count 1,
                                   :left  #a.Node{:value 0, :count 1, :left nil, :right nil},
                                   :right #a.Node{:value 2, :count 1, :left nil, :right nil}}))
 
-    (is (= (remove bag 2) #a.Node{:value 1, :count 2,
+    (is (= (delete bag 2) #a.Node{:value 1, :count 2,
                                   :left  #a.Node{:value 0, :count 1, :left nil, :right nil},
                                   :right nil}))
-    (is (= (remove (remove bag 1) 1) #a.Node{:value 2, :count 1,
+    (is (= (delete (delete bag 1) 1) #a.Node{:value 2, :count 1,
                                              :left  #a.Node{:value 0, :count 1, :left nil, :right nil},
                                              :right nil}))))
 
@@ -32,9 +32,9 @@
                                                :left nil,
                                                :right #a.Node{:value 2, :count 1, :left nil, :right nil}}))))
 
-(deftest test_map
+(deftest test_map_f
   (let [bag (add (add (add (add (create-bag) 1) 1) 2) 0)]
-    (is (= (map bag inc) #a.Node{:value 2, :count 2,
+    (is (= (map_f bag inc) #a.Node{:value 2, :count 2,
                                  :left  #a.Node{:value 1, :count 1, :left nil, :right nil},
                                  :right #a.Node{:value 3, :count 1, :left nil, :right nil}}))))
 

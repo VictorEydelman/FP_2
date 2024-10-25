@@ -20,7 +20,7 @@
     (recur (:left node))
     node))
 
-(defn remove [node value]
+(defn delete [node value]
   (if (nil? node)
     nil
     (let [cmp (compare value (:value node))]
@@ -35,9 +35,9 @@
             :else
             (let [min-node (find-min (:right node))]
               (assoc (assoc node :value (:value min-node) :count 1)
-                :right (remove (:right node) (:value min-node))))))
-        (< cmp 0) (assoc node :left (remove (:left node) value))
-        (> cmp 0) (assoc node :right (remove (:right node) value))))))
+                :right (delete (:right node) (:value min-node))))))
+        (< cmp 0) (assoc node :left (delete (:left node) value))
+        (> cmp 0) (assoc node :right (delete (:right node) value))))))
 
 (defn filter_min_or_equal
   ([node value]
@@ -58,13 +58,13 @@
 (defn update-node [value count left right]
   (->Node value count left right))
 
-(defn map [node f]
+(defn map_f [node f]
   (if (nil? node)
     nil
     (let [new-value (f (:value node))
           count (:count node)
-          left-child (map (:left node) f)
-          right-child (map (:right node) f)]
+          left-child (map_f (:left node) f)
+          right-child (map_f (:right node) f)]
       (update-node new-value count left-child right-child))))
 
 (defn reduce_left [node f init]
