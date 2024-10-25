@@ -1,4 +1,5 @@
-(ns property-test
+#_{:clj-kondo/ignore [:require-use]}
+(ns property_test
   (:require
     [clojure.test.check.clojure-test :refer [defspec]]
     [clojure.test.check.generators :as gen]
