@@ -84,17 +84,17 @@
         (reduce_right (:left node) f init3))))
   )
 
-(defn add_bag_to_bag
-  [bag1 bag2]
-  (add bag1 (:value bag2))
-  (println bag1 bag2 1)
-  (if (nil? bag2)
-    nil
-    (let [new-value (:value bag2)
-          left-child (add_bag_to_bag bag1 (:left bag2))
-          right-child (add_bag_to_bag bag1 (:right bag2) )]
-      bag1)))
-(def b (add (add (create-bag) 2) 0))
-(def b2 (add (add (create-bag) -1) 4))
-(def b (add_bag_to_bag b b2))
-(println b)
+;(defn add_bag_to_bag
+ ; [bag1 bag2]
+  ;(add bag1 (:value bag2))
+  ;(println bag1 bag2 1)
+  ;(if (nil? bag2)
+   ; nil
+    ;(let [new-value (:value bag2)
+     ;     left-child (add_bag_to_bag bag1 (:left bag2))
+      ;    right-child (add_bag_to_bag bag1 (:right bag2) )]
+      ;bag1)))
+;(def b (add (add (create-bag) 2) 0))
+;(def b2 (add (add (create-bag) -1) 4))
+;(def b (add_bag_to_bag b b2))
+;(println b)
