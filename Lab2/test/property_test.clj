@@ -1,4 +1,4 @@
-(ns property-test
+(ns property_test
   (:require
     [clojure.test.check.clojure-test :refer [defspec]]
     [clojure.test.check.generators :as gen]
