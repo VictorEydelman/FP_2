@@ -23,10 +23,10 @@ jobs:
       run: npm install -g clj-kondo
 
     - name: Format code
-      run: cd lab2 && clojure -A:format
+      run: cd Lab2 && clojure -A:format
 
     - name: Run tests
-      run: cd lab2 && clojure -A:test
+      run: cd Lab2 && clojure -A:test
 
     - name: Run lint
-      run: cd lab2 && clojure -A:lint
+      run: cd Lab2 && clojure -A:lint
