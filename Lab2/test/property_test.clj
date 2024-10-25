@@ -1,9 +1,9 @@
-(ns property_test
+(ns property-test
   (:require
     [clojure.test.check.clojure-test :refer [defspec]]
     [clojure.test.check.generators :as gen]
     [clojure.test.check.properties :as prop]
-    [a :refer [add remove]]))
+    [a :refer [add delete]]))
 
 
 (def gen_element
@@ -14,4 +14,4 @@
          100
          (prop/for-all [element gen_element bag #a.Node{:value 1, :count 1, :left nil, :right nil}]
                        (let [new_bag (add bag element)]
-                         (= (remove new_bag element) bag))))
+                         (= (delete new_bag element) bag))))
