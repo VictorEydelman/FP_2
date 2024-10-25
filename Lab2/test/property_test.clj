@@ -3,7 +3,7 @@
     [clojure.test.check.clojure-test :refer [defspec]]
     [clojure.test.check.generators :as gen]
     [clojure.test.check.properties :as prop]
-    [a :refer [create-bag add remove create-node filter_min_or_equal filter_max_or_equal map reduce_left reduce_right]]))
+    [a :refer [add remove]]))
 
 
 (def gen_element
