@@ -6,8 +6,7 @@
     [a :refer [add delete]]))
 
 
-(def gen_element
-  gen/int)
+(def gen_element gen/int)
 
 #_ {:clj-kondo/ignore [:unresolved-symbol]}
 (defspec invariant
