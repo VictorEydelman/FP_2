@@ -1,5 +1,5 @@
 (ns unit_test
-  (:require [clojure.test :refer [deftest testing is run-tests]]
+  (:require [clojure.test :refer [deftest is run-tests]]
             [a :refer [create-bag add delete filter_min_or_equal filter_max_or_equal map_f reduce_left reduce_right]]))
 (deftest test_add
   (let [bag (create-bag)]
