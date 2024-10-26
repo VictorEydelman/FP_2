@@ -15,7 +15,7 @@
   (->Node value 1 {} {}))
 ```
 
-1) Добавление:
+# 1) Добавление:
 ```clojure
 (defn add [node value]
   (if (zero? (count node))
@@ -35,7 +35,7 @@
 ветки фомируеются по принципу больше или меньше ли наше значение чем, то на котором мы в нашем
 дереве сейчас, если элементы равны, но увеличиваем count.
 
-2) Удаление:
+# 2) Удаление:
 
 ```clojure
 (defn find-min [node]
@@ -74,7 +74,7 @@
 то левую, но если есть и та и та, то ищется минимальное значение в правой ветви и подставляем вместо
 удалённого, и из правой ветви удаляем этот минимальный элемент.
 
-3) Фильтрация:
+# 3) Фильтрация:
 
 ```clojure
 (defn filter_f
@@ -96,7 +96,7 @@
 для которых функция выполняется, а остальные удаляются с помощью функции
 delete описаной ранее.
 
-3.2) Фильтрация всех элементов по значению меньше или равному данному:
+# 3.2) Фильтрация всех элементов по значению меньше или равному данному:
 
 ```clojure
 (defn filter_min_or_equal
@@ -115,7 +115,7 @@ delete описаной ранее.
 
 Для этого проводится проход по дереву, если значение меньше или равно, то оставляем это значение и переход на правую ветвь, иначе переходим на левую, пропуская данную.
 
-3.3) Фильтрация всех элементов по значению больше или равному данному:
+# 3.3) Фильтрация всех элементов по значению больше или равному данному:
 
 ```clojure
 (defn filter_max_or_equal
@@ -133,7 +133,7 @@ delete описаной ранее.
 
 Аналогично предыдущему, но наоборот проверяет, что значение больше или равно и переход по ветвям обратный.
 
-4) отображение (map):
+# 4) отображение (map):
 
 ```clojure
 (defn update-node [value count left right]
@@ -151,7 +151,7 @@ delete описаной ранее.
 
 Для map используется проход по дереву и каждый элемент обновляется его, задавая новое значение которое равно f от предыдущего.
 
-5.1)свертки левая:
+# 5.1)свертки левая:
 
 ```clojure
 (defn reduce_left [node f init]
@@ -165,7 +165,7 @@ delete описаной ранее.
 
 Для этого идёт проход слева направо и идёт сверка значения элемента с предыдущим результатом.
 
-5.2)свертки правая:
+# 5.2)свертки правая:
 
 ```clojure
 defn reduce_right [node f init]
@@ -180,7 +180,7 @@ defn reduce_right [node f init]
 
 Тоже самое, что и при левой, но проход идёт справа налево.
 
-6) Объединение двух bag в один:
+# 6) Объединение двух bag в один:
 
 ```clojure
 (defn merger [bag1 bag2]
@@ -188,3 +188,131 @@ defn reduce_right [node f init]
 ```
 
 Для этого использую свёртку слева при которой из второго bag элементы добавляюся в первый c помощью команды add.
+
+## unit testing:
+
+```clojure
+(ns unitTest
+  (:require [clojure.test :refer [deftest is run-tests]]
+            [a :refer [create-bag add delete filter_f filter_min_or_equal filter_max_or_equal map_f reduce_left reduce_right merger]]))
+(deftest test_add
+  (let [bag (create-bag)]
+    (is (= (add bag 2) #a.Node{:value 2, :count 1, :left {}, :right {}}))
+
+    (is (= (add (add (add (add bag 1) 1) 2) 0) #a.Node{:value 1, :count 2,
+                                                       :left  #a.Node{:value 0, :count 1, :left {}, :right {}},
+                                                       :right #a.Node{:value 2, :count 1, :left {}, :right {}}}))))
+(deftest test_delete
+  (let [bag (add (add (add (add (create-bag) 1) 1) 2) 0)]
+    (is (= (delete bag 1) #a.Node{:value 1, :count 1,
+                                  :left  #a.Node{:value 0, :count 1, :left {}, :right {}},
+                                  :right #a.Node{:value 2, :count 1, :left {}, :right {}}}))
+
+    (is (= (delete bag 2) #a.Node{:value 1, :count 2,
+                                  :left  #a.Node{:value 0, :count 1, :left {}, :right {}},
+                                  :right {}}))
+    (is (= (delete (delete bag 1) 1) #a.Node{:value 2, :count 1,
+                                             :left  #a.Node{:value 0, :count 1, :left {}, :right {}},
+                                             :right {}}))))
+
+(deftest test_filter_min_or_equal
+  (let [bag (add (add (add (add (create-bag) 1) 1) 2) 0)]
+    (is (= (filter_min_or_equal bag 1) #a.Node{:value 1, :count 2,
+                                               :left #a.Node{:value 0, :count 1, :left {}, :right {}},
+                                               :right {}}))))
+(deftest test_filter_f_max_or_equal
+  (let [bag (add (add (add (add (create-bag) 1) 1) 2) 0)]
+    (is (= (filter_max_or_equal bag 1) #a.Node{:value 1, :count 2,
+                                               :left {},
+                                               :right #a.Node{:value 2, :count 1, :left {}, :right {}}}))))
+(defn prost? [num]
+  (loop [i (int (Math/sqrt num))]
+    (if (zero? (rem num i))
+      (= i 1)
+      (recur (dec i)))))
+
+(deftest test_filter_f
+  (let [bag (add (add (add (add (create-bag) 3) 5) 2) 3)]
+    (is (= (filter_f prost? bag) #a.Node{:value 3, :count 2, :left #a.Node{:value 2, :count 1, :left {}, :right {}}, :right #a.Node{:value 5, :count 1, :left {}, :right {}}})))
+  (let [bag (add (add (add (add (create-bag) 1) 1) 2) 0)]
+    (is (= (filter_f zero? bag) #a.Node{:value 0, :count 1, :left {}, :right {}}))))
+
+(deftest test_map_f
+  (let [bag (add (add (add (add (create-bag) 1) 1) 2) 0)]
+    (is (= (map_f bag inc) #a.Node{:value 2, :count 2,
+                                 :left  #a.Node{:value 1, :count 1, :left {}, :right {}},
+                                 :right #a.Node{:value 3, :count 1, :left {}, :right {}}}))))
+
+(deftest test_reduce_left
+  (let [bag (add (add (add (add (create-bag) 1) 1) 2) 0)]
+    (is (= (reduce_left bag + 0) 4))
+    (is (= (reduce_left bag max 0) 2))
+    (is (= (reduce_left bag min 100000000000) 0))))
+
+(deftest test_reduce_right
+  (let [bag (add (add (add (add (create-bag) 1) 1) 2) 0)]
+    (is (= (reduce_right bag + 0) 4))
+    (is (= (reduce_right bag max 0) 2))
+    (is (= (reduce_right bag min 100000000000) 0))))
+
+(deftest test_merger
+  (let [bag1 (add (add (add (add (create-bag) 1) 1) 2) 0) bag2 (add (add (add (add (create-bag) 3) 5) 2) 3)]
+    (is (= (merger bag1 bag2) #a.Node{:value 1, :count 2, :left
+                                      #a.Node{:value 0, :count 1, :left {}, :right {}},
+                                      :right #a.Node{:value 2, :count 2, :left {}, :right #a.Node{:value 3, :count 2, :left {}, :right #a.Node{:value 5, :count 1, :left {}, :right {}}}}}))
+    ))
+
+(run-tests)
+```
+
+В нём тестируются все описанные ранее методы.
+
+## property-based тестирование:
+
+```clojure
+(ns propertyTest
+  (:require
+    [clojure.test.check.clojure-test :refer [defspec]]
+    [clojure.test.check.generators :as gen]
+    [clojure.test.check.properties :as prop]
+    [a :refer [add delete create-bag merger]]))
+
+(def gen_element
+  gen/int)
+
+(def gen_bag
+  (gen/vector gen_element))
+
+#_{:clj-kondo/ignore [:unresolved-symbol]}
+(defspec invariant
+  100
+  (prop/for-all [element gen_element node gen_bag]
+    (let [bag (if (= node []) (create-bag) (reduce add (create-bag) node))]
+      (= (delete (add bag element) element) bag))
+    ))
+
+#_{:clj-kondo/ignore [:unresolved-symbol]}
+(defspec merge-empty-bag
+  100
+  (prop/for-all [node gen_bag]
+    (let [bag (if (= node []) (create-bag) (reduce add (create-bag) node))]
+      (= (merger bag (create-bag)) bag))
+    ))
+#_{:clj-kondo/ignore [:unresolved-symbol]}
+(defspec monoid
+  100
+  (prop/for-all [node gen_bag]
+    (let [bag (if (= node []) (create-bag) (reduce add (create-bag) node))]
+      (= (merger (merger bag bag) bag)
+         (merger bag (merger bag bag))))
+    ))
+#_{:clj-kondo/ignore [:unresolved-symbol]}
+(defspec polymorphic
+  100
+  (prop/for-all [element (gen/one-of [gen/int gen/char gen/boolean]) node (gen/vector (gen/one-of [gen/int gen/char gen/boolean]))]
+    (let [bag (if (= node []) (create-bag) (reduce add (create-bag) node))]
+      (= (delete (add bag element) element) bag))
+    ))
+```
+
+Это тестирование проверяет выполнение различных свойств для библиотеки.
