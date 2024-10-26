@@ -16,8 +16,7 @@
   100
   (prop/for-all [element gen_element node gen_bag]
     (let [bag (if (= node []) (create-bag) (reduce add (create-bag) node))]
-      (let [bag_new (add bag element)]
-        (= (delete bag_new element) bag)))
+      (= (delete (add bag element) element) bag))
     ))
 
 #_{:clj-kondo/ignore [:unresolved-symbol]}
@@ -25,9 +24,7 @@
   100
   (prop/for-all [node gen_bag]
     (let [bag (if (= node []) (create-bag) (reduce add (create-bag) node))]
-      (let [empty (create-bag)]
-        (= (merger bag empty) bag)
-        ))
+      (= (merger bag (create-bag)) bag))
     ))
 #_{:clj-kondo/ignore [:unresolved-symbol]}
 (defspec monoid
@@ -42,6 +39,5 @@
   100
   (prop/for-all [element (gen/one-of [gen/int gen/char gen/boolean]) node (gen/vector (gen/one-of [gen/int gen/char gen/boolean]))]
     (let [bag (if (= node []) (create-bag) (reduce add (create-bag) node))]
-      (let [bag_new (add bag element)]
-        (= (delete bag_new element) bag)))
+      (= (delete (add bag element) element) bag))
     ))
