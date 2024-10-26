@@ -38,6 +38,11 @@
 2) Удаление:
 
 ```clojure
+(defn find-min [node]
+  (if (not (= {} (:left node)))
+    (recur (:left node))
+    node))
+
 (defn delete [node value]
   (if (= {} node)
     {}
@@ -55,7 +60,7 @@
             (= {} (:left node)) (:right node)
             (= {} (:right node)) (:left node)
             :else
-            (let [min-node (if (not (= {} (:left node))) (recur (:left node)) node)]
+            (let [min-node (find-min (:right node))]
               (assoc (assoc node :value (:value min-node) :count 1)
                 :right (delete (:right node) (:value min-node))))))
         (< cmp 0) (assoc node :left (delete (:left node) value))
@@ -83,14 +88,15 @@
                   :else
                   (let [min-node (find-min (:right node))]
                     (filter_f f (assoc (assoc node :value (:value min-node) :count 1)
-                                :right (delete (:right node) (:value min-node)))))))))
+                                  :right (delete (:right node) (:value min-node)))))))))
+
 ```
 
 Для фильтрации используется проход по всему дереву, с выводом всех элементов
 для которых функция выполняется, а остальные удаляются с помощью функции
 delete описаной ранее.
 
-3.1) Фильтрация всех элементов по значению меньше или равному данному:
+3.2) Фильтрация всех элементов по значению меньше или равному данному:
 
 ```clojure
 (defn filter_min_or_equal
@@ -109,7 +115,7 @@ delete описаной ранее.
 
 Для этого проводится проход по дереву, если значение меньше или равно, то оставляем это значение и переход на правую ветвь, иначе переходим на левую, пропуская данную.
 
-3.2) Фильтрация всех элементов по значению больше или равному данному:
+3.3) Фильтрация всех элементов по значению больше или равному данному:
 
 ```clojure
 (defn filter_max_or_equal
@@ -126,3 +132,59 @@ delete описаной ранее.
 ```
 
 Аналогично предыдущему, но наоборот проверяет, что значение больше или равно и переход по ветвям обратный.
+
+4) отображение (map):
+
+```clojure
+(defn update-node [value count left right]
+  (->Node value count left right))
+
+(defn map_f [node f]
+  (if (= {} node)
+    {}
+    (let [new-value (f (:value node))
+          count (:count node)
+          left-child (map_f (:left node) f)
+          right-child (map_f (:right node) f)]
+      (update-node new-value count left-child right-child))))
+```
+
+Для map используется проход по дереву и каждый элемент обновляется его, задавая новое значение которое равно f от предыдущего.
+
+5.1)свертки левая:
+
+```clojure
+(defn reduce_left [node f init]
+  (if (= {} node)
+    init
+    (let [init2 (reduce_left (:left node) f init)]
+      (reduce_left (:right node) f (loop [count (dec (:count node)) init3 (f init2 (:value node))]
+         (if (zero? count) init3 (recur (dec count) (f init3 (:value node))))))))
+  )
+```
+
+Для этого идёт проход слева направо и идёт сверка значения элемента с предыдущим результатом.
+
+5.2)свертки правая:
+
+```clojure
+defn reduce_right [node f init]
+  (if (= {} node)
+    init
+    (let [init2 (reduce_right (:right node) f init)]
+      (reduce_right (:left node) f
+                    (loop [count (dec (:count node)) init3 (f init2 (:value node))]
+                      (if (zero? count) init3 (recur (dec count) (f init3 (:value node)))))
+                    ))))
+```
+
+Тоже самое, что и при левой, но проход идёт справа налево.
+
+6) Объединение двух bag в один:
+
+```clojure
+(defn merger [bag1 bag2]
+  (reduce_left bag2 add bag1))
+```
+
+Для этого использую свёртку слева при которой из второго bag элементы добавляюся в первый c помощью команды add.
