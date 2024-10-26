@@ -60,11 +60,11 @@
                               :else (int (:value node))))]
        (cond (>= cmp 0) (assoc node :right (filter_min_or_equal (:right node) value))
              (< cmp 0) (filter_min_or_equal (:left node) value))))))
+
 (defn filter_max_or_equal
   ([node value]
    (if (= {} node)
-     {}
-     (let [cmp (compare (cond (or (number? value) (nil? value)) value
+     {} (let [cmp (compare (cond (or (number? value) (nil? value)) value
                               (boolean? value) (if (true? value) 1 0)
                               :else (int value))
                         (cond (or (number? (:value node)) (nil? (:value node))) (:value node)
@@ -72,17 +72,17 @@
                               :else (int (:value node))))]
        (cond (<= cmp 0) (assoc node :left (filter_max_or_equal (:left node) value))
              (> cmp 0) (filter_max_or_equal (:right node) value))))))
-(defn filter
+(defn filter_f
   [f node]
   (if (= {} node)
     {}
-    (cond (f (:value node)) (assoc node :right (filter f (:right node)) :left (filter f (:left node)))
+    (cond (f (:value node)) (assoc node :right (filter_f f (:right node)) :left (filter_f f (:left node)))
           :else (cond
-                  (= {} (:left node)) (filter f (:right node))
-                  (= {} (:right node)) (filter f (:left node))
+                  (= {} (:left node)) (filter_f f (:right node))
+                  (= {} (:right node)) (filter_f f (:left node))
                   :else
                   (let [min-node (find-min (:right node))]
-                    (filter f (assoc (assoc node :value (:value min-node) :count 1)
+                    (filter_f f (assoc (assoc node :value (:value min-node) :count 1)
                                 :right (delete (:right node) (:value min-node)))))))))
 
 (defn update-node [value count left right]
@@ -104,6 +104,7 @@
       (reduce_left (:right node) f (loop [count (dec (:count node)) init3 (f init2 (:value node))]
          (if (zero? count) init3 (recur (dec count) (f init3 (:value node))))))))
   )
+
 (defn reduce_right [node f init]
   (if (= {} node)
     init
@@ -114,9 +115,6 @@
         )))
   )
 
-(def b (create-bag))
-(def b2 (add (add (create-bag) -1) 4))
-
 (defn merger [bag1 bag2]
   (reduce_left bag2 add bag1))
-(def b (merger b b2))
+

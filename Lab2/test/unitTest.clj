@@ -1,6 +1,6 @@
 (ns unitTest
   (:require [clojure.test :refer [deftest is run-tests]]
-            [a :refer [create-bag add delete filter filter_min_or_equal filter_max_or_equal map_f reduce_left reduce_right merger]]))
+            [a :refer [create-bag add delete filter_f filter_min_or_equal filter_max_or_equal map_f reduce_left reduce_right merger]]))
 (deftest test_add
   (let [bag (create-bag)]
     (is (= (add bag 2) #a.Node{:value 2, :count 1, :left {}, :right {}}))
@@ -26,7 +26,7 @@
     (is (= (filter_min_or_equal bag 1) #a.Node{:value 1, :count 2,
                                                :left #a.Node{:value 0, :count 1, :left {}, :right {}},
                                                :right {}}))))
-(deftest test_filter_max_or_equal
+(deftest test_filter_f_max_or_equal
   (let [bag (add (add (add (add (create-bag) 1) 1) 2) 0)]
     (is (= (filter_max_or_equal bag 1) #a.Node{:value 1, :count 2,
                                                :left {},
@@ -37,11 +37,11 @@
       (= i 1)
       (recur (dec i)))))
 
-(deftest test_filter
+(deftest test_filter_f
   (let [bag (add (add (add (add (create-bag) 3) 5) 2) 3)]
-    (is (= (filter prost? bag) #a.Node{:value 3, :count 2, :left #a.Node{:value 2, :count 1, :left {}, :right {}}, :right #a.Node{:value 5, :count 1, :left {}, :right {}}})))
+    (is (= (filter_f prost? bag) #a.Node{:value 3, :count 2, :left #a.Node{:value 2, :count 1, :left {}, :right {}}, :right #a.Node{:value 5, :count 1, :left {}, :right {}}})))
   (let [bag (add (add (add (add (create-bag) 1) 1) 2) 0)]
-    (is (= (filter zero? bag) #a.Node{:value 0, :count 1, :left {}, :right {}}))))
+    (is (= (filter_f zero? bag) #a.Node{:value 0, :count 1, :left {}, :right {}}))))
 
 (deftest test_map_f
   (let [bag (add (add (add (add (create-bag) 1) 1) 2) 0)]

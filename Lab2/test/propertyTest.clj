@@ -45,12 +45,3 @@
       (let [bag_new (add bag element)]
         (= (delete bag_new element) bag)))
     ))
-
-#_{:clj-kondo/ignore [:unresolved-symbol]}
-(defspec filter-bag
-  100
-  (prop/for-all [node gen_bag]
-    (let [bag (if (= node []) (create-bag) (reduce add (create-bag) node)) ]
-      (let [bag_new (add bag element)]
-        (= (delete bag_new element) bag)))
-    ))
