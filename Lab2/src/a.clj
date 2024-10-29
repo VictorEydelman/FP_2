@@ -9,12 +9,7 @@
 (defn add [node value]
   (if (zero? (count node))
     (create-node value)
-    (let [cmp (compare (cond (or (number? value) (nil? value)) value
-                             (boolean? value) (if (true? value) 1 0)
-                             :else value)
-                       (cond (or (number? (:value node)) (nil? (:value node))) (:value node)
-                             (boolean? (:value node)) (if (true? (:value node)) 1 0)
-                             :else (:value node)))]
+    (let [cmp (compare value (:value node))]
       (cond
         (= cmp 0) (assoc node :count (inc (:count node)))
         (< cmp 0) (assoc node :left (add (:left node) value))
@@ -28,12 +23,7 @@
 (defn delete [node value]
   (if (= {} node)
     {}
-    (let [cmp (compare (cond (or (number? value) (nil? value)) value
-                             (boolean? value) (if (true? value) 1 0)
-                             :else value)
-                       (cond (or (number? (:value node)) (nil? (:value node))) (:value node)
-                             (boolean? (:value node)) (if (true? (:value node)) 1 0)
-                             :else (:value node)))]
+    (let [cmp (compare value (:value node))]
       (cond
         (= cmp 0)
         (if (> (:count node) 1)
@@ -52,24 +42,14 @@
   ([node value]
    (if (= {} node)
      {}
-     (let [cmp (compare (cond (or (number? value) (nil? value)) value
-                             (boolean? value) (if (true? value) 1 0)
-                             :else value)
-                       (cond (or (number? (:value node)) (nil? (:value node))) (:value node)
-                             (boolean? (:value node)) (if (true? (:value node)) 1 0)
-                             :else (:value node)))]
+     (let [cmp (compare value (:value node))]
        (cond (>= cmp 0) (assoc node :right (filter_min_or_equal (:right node) value))
              (< cmp 0) (filter_min_or_equal (:left node) value))))))
 
 (defn filter_max_or_equal
   ([node value]
    (if (= {} node)
-     {} (let [cmp (compare (cond (or (number? value) (nil? value)) value
-                             (boolean? value) (if (true? value) 1 0)
-                             :else value)
-                       (cond (or (number? (:value node)) (nil? (:value node))) (:value node)
-                             (boolean? (:value node)) (if (true? (:value node)) 1 0)
-                             :else (:value node)))]
+     {} (let [cmp (compare value (:value node))]
        (cond (<= cmp 0) (assoc node :left (filter_max_or_equal (:left node) value))
              (> cmp 0) (filter_max_or_equal (:right node) value))))))
 (defn filter_f
