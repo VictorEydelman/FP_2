@@ -1,3 +1,4 @@
-{:linters
-   {:unsed-var {:level :warning}
-    :invalid-namespace {:level :error}}}
+{:lint-as {clojure.core/defn clojure.core/defn}
+ :ignore
+ [{:path "test/propertyTest" 
+   :reason :unresolved-symbol}]}
