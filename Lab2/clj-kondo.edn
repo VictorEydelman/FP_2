@@ -1,4 +1,5 @@
-{:lint-as {clojure.test.check.clojure-test/defspec clojure.test/deftest clojure.test.check.properties/for-all clojure.core/let}
- :ignore
- [{:ignore [{:reason :unresolved-symbol}]}
-]}
+   {:lint-as {clojure.test.check.clojure-test/defspec clojure.test/deftest
+              clojure.test.check.properties/for-all clojure.core/let}
+    :ignore [{:reason :unresolved-symbol}]}
+   
+
