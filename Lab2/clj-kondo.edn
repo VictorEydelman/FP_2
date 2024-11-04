@@ -1,0 +1,3 @@
+{:linters
+   {:unsed-var {:level :warning}
+    :invalid-namespace {:level :error}}}
