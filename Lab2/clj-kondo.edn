@@ -1,4 +1,5 @@
 {:lint-as {clojure.core/defn clojure.core/defn}
  :ignore
  [{:path "test/propertyTest" 
+   :line 16
    :reason :unresolved-symbol}]}
