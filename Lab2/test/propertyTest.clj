@@ -12,7 +12,6 @@
 (def gen_bag
   (gen/vector gen_element))
 
-#_{:clj-kondo/ignore [:unresolved-symbol]}
 (defspec invariant
   100
   (prop/for-all [element gen_element node gen_bag]
