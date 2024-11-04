@@ -3,7 +3,8 @@
     [clojure.test.check.clojure-test :refer [defspec]]
     [clojure.test.check.generators :as gen]
     [clojure.test.check.properties :as prop]
-    [a :refer [add delete create-bag merger]]))
+    [a :refer [add delete create-bag merger]])
+  (:import (java.util Date)))
 
 (def gen_element
   gen/int)
@@ -37,7 +38,8 @@
 #_{:clj-kondo/ignore [:unresolved-symbol]}
 (defspec polymorphic
   100
-  (prop/for-all [element (gen/one-of [gen/int gen/char gen/boolean]) node (gen/vector (gen/one-of [gen/int gen/char gen/boolean]))]
+  (prop/for-all [element (gen/one-of [gen/int gen/char gen/boolean gen/string gen/double
+                                      gen/Date]) node (gen/vector (gen/one-of [gen/int gen/char gen/boolean]))]
     (let [bag (if (= node []) (create-bag) (reduce add (create-bag) node))]
       (= (delete (add bag element) element) bag))
     ))
