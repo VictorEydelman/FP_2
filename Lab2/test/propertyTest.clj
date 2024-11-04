@@ -1,4 +1,7 @@
 (ns propertyTest
+  {:clj-kondo/config '{:linters
+ {:unused-var {:level :warning}
+  :invalid-namespace {:level :error}}}}
   (:require
     [clojure.test.check.clojure-test :refer [defspec]]
     [clojure.test.check.generators :as gen]
