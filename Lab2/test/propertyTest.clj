@@ -36,7 +36,8 @@
 (defspec polymorphic
   100
   (prop/for-all [element (gen/one-of [gen/int gen/char gen/boolean gen/string gen/double
-                                      gen/sample Date]) node (gen/vector (gen/one-of [gen/int gen/char gen/boolean]))]
+                                      gen/sample Date]) node (gen/vector (gen/one-of [gen/int gen/char gen/boolean gen/string gen/double
+                                      gen/sample Date]))]
     (let [bag (if (= node []) (create-bag) (reduce add (create-bag) node))]
       (= (delete (add bag element) element) bag))
     ))
